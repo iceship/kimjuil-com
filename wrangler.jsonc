@@ -1,5 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "kimjuil-com",
   "observability": {
     "logs": {
       "enabled": true,

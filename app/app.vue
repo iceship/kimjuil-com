@@ -23,9 +23,9 @@ useHead({
 
 useSeoMeta({
   viewport: "width=device-width, initial-scale=1, maximum-scale=1",
-  title: "Kim Juil",
+  title: "KimJuil",
   description:
-    "Personal website of Kim Juil.",
+    "Personal website of KimJuil.",
   ogImage: "/social-image.png",
   twitterImage: "/social-image.png",
   twitterCard: "summary_large_image",
@@ -63,7 +63,7 @@ const items = [
         <template #header>
           <h3 class="text-lg font-semibold leading-6">
             <NuxtLink to="/">
-              Kim Juil
+              KimJuil
             </NuxtLink>
           </h3>
           <UButton
