@@ -12,7 +12,9 @@
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "typecheck": "nuxt typecheck",
-    "prepare": "husky"
+    "prepare": "husky",
+    "db:generate": "nuxt db generate",
+    "db:migrate": "nuxt db migrate"
   },
   "dependencies": {
     "@iconify-json/lucide": "^1.2.81",
