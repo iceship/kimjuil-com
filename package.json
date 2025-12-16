@@ -11,7 +11,8 @@
     "deploy-vercel": "pnpm vercel deploy",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
-    "typecheck": "nuxt typecheck"
+    "typecheck": "nuxt typecheck",
+    "prepare": "husky"
   },
   "dependencies": {
     "@iconify-json/lucide": "^1.2.81",
@@ -40,6 +41,8 @@
     "baseline-browser-mapping": "^2.9.7",
     "eslint": "^9.39.1",
     "eslint-plugin-format": "^1.1.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
     "typescript": "^5.9.3",
     "vue-tsc": "^3.1.8",
     "wrangler": "4.54.0"
@@ -53,5 +56,8 @@
       "vue-demi",
       "workerd"
     ]
+  },
+  "lint-staged": {
+    "*": "pnpm lint"
   }
 }
