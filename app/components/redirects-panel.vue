@@ -21,7 +21,7 @@ async function updateRedirects() {
 <template>
   <div>
     <h3>Server redirects</h3>
-    <form @submit.prevent="updateRedirects">
+    <form v-if="redirects" @submit.prevent="updateRedirects">
       <p>
         <textarea
           v-model="redirects.text"

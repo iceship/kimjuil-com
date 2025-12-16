@@ -63,7 +63,7 @@ const items = [
         <template #header>
           <h3 class="text-lg font-semibold leading-6">
             <NuxtLink to="/">
-              Atidone
+              Kim Juil
             </NuxtLink>
           </h3>
           <UButton
@@ -117,20 +117,12 @@ const items = [
 
       <footer class="flex items-center justify-center gap-2 mt-4">
         <UButton
-          href="https://github.com/atinux/atidone"
+          href="https://github.com/iceship"
           target="_blank"
           color="neutral"
           variant="ghost"
           size="sm"
           icon="i-simple-icons-github"
-        />
-        <UButton
-          href="https://x.com/atinux"
-          target="_blank"
-          color="neutral"
-          variant="ghost"
-          size="sm"
-          icon="i-simple-icons-x"
         />
       </footer>
     </UContainer>
