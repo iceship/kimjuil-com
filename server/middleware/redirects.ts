@@ -1,14 +1,15 @@
-import { parseURL } from 'ufo'
-import { kv } from 'hub:kv'
+import { kv } from "hub:kv";
+import { parseURL } from "ufo";
 
 export default eventHandler(async (event) => {
   // Skip during prerendering
-  if (import.meta.prerender) return
+  if (import.meta.prerender)
+    return;
 
-  const { pathname } = parseURL(event.path)
-  const redirects = await kv.get<{ [key: string]: string }>('redirects')
+  const { pathname } = parseURL(event.path);
+  const redirects = await kv.get<{ [key: string]: string }>("redirects");
 
   if (redirects?.[pathname]) {
-    return sendRedirect(event, redirects[pathname])
+    return sendRedirect(event, redirects[pathname]);
   }
-})
+});

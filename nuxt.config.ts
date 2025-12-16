@@ -1,14 +1,20 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
-    '@nuxthub/core',
-    '@nuxt/eslint',
+    "@nuxt/ui",
+    "@nuxt/fonts",
+    "@nuxt/eslint",
+    "@nuxthub/core",
+    "nuxt-auth-utils",
+    "@pinia/nuxt",
+    "@pinia/colada-nuxt",
   ],
   devtools: { enabled: true },
-  compatibilityDate: '2025-12-11',
+  css: ["~/assets/css/main.css"],
+  compatibilityDate: "2025-12-11",
 
   hub: {
-    db: 'sqlite',
+    db: "sqlite",
     kv: true,
     blob: true,
     cache: true,
@@ -16,7 +22,7 @@ export default defineNuxtConfig({
 
   eslint: {
     config: {
-      stylistic: true,
+      standalone: false,
     },
   },
-})
+});

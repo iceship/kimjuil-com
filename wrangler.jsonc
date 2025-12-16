@@ -1,40 +1,40 @@
 {
-	"$schema": "node_modules/wrangler/config-schema.json",
-    "observability": {
-        "logs": {
-          "enabled": true,
-          "head_sampling_rate": 1,
-          "persist": true,
-          "invocation_logs": true
-        },
-        "traces": {
-          "enabled": true,
-          "head_sampling_rate": 1,
-          "persist": true
-        }
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "observability": {
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "persist": true,
+      "invocation_logs": true
     },
-	"d1_databases": [
-		{
-			"binding": "DB",
-      "database_id": "a30aa564-d388-493b-8994-23f8dfd129f5",
+    "traces": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "persist": true
+    }
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_id": "47efb125-e193-4066-a4c4-964f96c1d95c",
       "migrations_table": "_hub_migrations",
-      "migrations_dir": ".output/server/db/migrations/sqlite/",
-		}
-	],
-	"kv_namespaces": [
-		{
-			"binding": "KV",
-      "id": "ba6f3913de344cb1a833f3cf20ba5aa8"
-		},
-		{
-			"binding": "CACHE",
-      "id": "ba6f3913de344cb1a833f3cf20ba5aa8"
-		}
-	],
-	"r2_buckets": [
-		{
-			"binding": "BLOB",
-      "bucket_name": "hub-starter-p2s5"
-		}
-	],
+      "migrations_dir": ".output/server/db/migrations/sqlite/"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "KV",
+      "id": "24bdba7d16ef40e9aec5f8d12fe11e0c"
+    },
+    {
+      "binding": "CACHE",
+      "id": "24bdba7d16ef40e9aec5f8d12fe11e0c"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "BLOB",
+      "bucket_name": "kimjuil-com-blob"
+    }
+  ]
 }

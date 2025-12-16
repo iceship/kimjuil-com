@@ -1,23 +1,25 @@
 <script setup lang="ts">
-const { data: images, refresh } = await useFetch('/api/images')
+const toast = useToast();
+const { data: images, refresh } = await useFetch("/api/images");
 
 async function uploadImage(e: Event) {
   // https://hub.nuxt.com/docs/storage/blob#useupload
-  const upload = useUpload('/api/images/upload', {
+  const upload = useUpload("/api/images/upload", {
     multiple: false,
-  })
-  const form = e.target as HTMLFormElement
+  });
+  const form = e.target as HTMLFormElement;
   await upload(form.image)
     .then(async () => {
-      form.reset()
-      await refresh()
+      form.reset();
+      await refresh();
+      toast.add({ title: "Image uploaded successfully", color: "success" });
     })
-    .catch(err => alert('Failed to upload image:\n' + err.data?.message))
+    .catch(err => toast.add({ title: "Failed to upload image", description: err.data?.message, color: "error" }));
 }
 
 async function deleteImage(pathname: string) {
-  await $fetch(`/api/images/${pathname}`, { method: 'DELETE' })
-  await refresh()
+  await $fetch(`/api/images/${pathname}`, { method: "DELETE" });
+  await refresh();
 }
 </script>
 

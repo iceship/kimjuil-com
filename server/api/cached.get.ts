@@ -4,7 +4,7 @@
 export default cachedEventHandler(() => {
   return {
     now: Date.now(),
-  }
+  };
 }, {
   maxAge: 5, // 5 seconds
-})
+});

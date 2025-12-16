@@ -1,42 +1,43 @@
 <script setup lang="ts">
-const { data: messages, refresh } = await useFetch('/api/messages')
-const newMessage = ref('')
+const { data: messages, refresh } = await useFetch("/api/messages");
+const newMessage = ref("");
 // const updateMessage = ref('')
 
 async function sendMessage() {
-  if (!newMessage.value.trim()) return
-  await $fetch('/api/messages', {
-    method: 'POST',
+  if (!newMessage.value.trim())
+    return;
+  await $fetch("/api/messages", {
+    method: "POST",
     body: {
       text: newMessage.value,
     },
-  })
-  newMessage.value = ''
-  await refresh()
+  });
+  newMessage.value = "";
+  await refresh();
 }
 
 async function deleteMessage(messageID: number | undefined) {
-  await $fetch('/api/messages', {
-    method: 'DELETE',
+  await $fetch("/api/messages", {
+    method: "DELETE",
     body: {
       messageID,
     },
-  })
-  await refresh()
+  });
+  await refresh();
 }
 
 async function updateMessage(
   messageID: number | undefined,
   text: string | undefined,
 ) {
-  await $fetch('/api/messages', {
-    method: 'PUT',
+  await $fetch("/api/messages", {
+    method: "PUT",
     body: {
       messageID,
       text,
     },
-  })
-  await refresh()
+  });
+  await refresh();
 }
 </script>
 
