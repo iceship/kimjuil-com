@@ -1,6 +1,5 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "kimjuil-com",
   "observability": {
     "logs": {
       "enabled": true,
@@ -13,6 +12,11 @@
       "head_sampling_rate": 1,
       "persist": true
     }
+  },
+  "vars": {
+    "NUXT_SITE_URL": "https://kimjuil.com",
+    "NUXT_SITE_NAME": "KimJuil",
+    "NUXT_SITE_ENV": "production"
   },
   "d1_databases": [
     {

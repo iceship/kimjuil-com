@@ -1,9 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  site: {
-    url: "https://kimjuil.com",
-    name: "KimJuil",
-  },
   modules: [
     "@nuxthub/core",
     "@pinia/nuxt",
@@ -36,15 +32,5 @@ export default defineNuxtConfig({
       standalone: false,
     },
   },
-  ogImage: {
-    zeroRuntime: true,
-  },
-  nitro: {
-    prerender: {
-      routes: [
-        "/",
-      ],
-      crawlLinks: true,
-    },
-  },
+
 });
