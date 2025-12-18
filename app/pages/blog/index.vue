@@ -14,8 +14,8 @@ useSeoMeta({
   ogDescription: description,
 });
 
-defineOgImageComponent("Juil");
-// defineOgImageComponent("NuxtSeo");
+// defineOgImageComponent("Juil");
+defineOgImageComponent("NuxtSeo");
 </script>
 
 <template>
