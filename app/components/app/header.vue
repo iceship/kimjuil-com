@@ -16,10 +16,6 @@ const items = computed(() => {
         label: "Todos",
         to: "/todos",
       },
-      {
-        label: "Optimistic Todos",
-        to: "/optimistic-todos",
-      },
     );
   }
 

@@ -36,4 +36,8 @@ export default defineNuxtConfig({
     // If not using `defineRouteRules` in the page component
     "/blog": { prerender: true },
   },
+  colorMode: {
+    preference: "dark",
+    fallback: "dark",
+  },
 });
