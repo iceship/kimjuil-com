@@ -32,5 +32,8 @@ export default defineNuxtConfig({
       standalone: false,
     },
   },
-
+  routeRules: {
+    // If not using `defineRouteRules` in the page component
+    "/blog": { prerender: true },
+  },
 });

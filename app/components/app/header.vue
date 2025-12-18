@@ -1,22 +1,30 @@
 <script setup lang="ts">
-import type { DropdownMenuItem } from "#ui/types";
+const { loggedIn } = useUserSession();
 
-const { loggedIn, user, clear } = useUserSession();
-
-const items = computed(() => [{
-  label: "Blog",
-  to: "/blog",
-}]);
-
-const itemLogout = [
-  [
+const items = computed(() => {
+  const baseItems = [
     {
-      label: "Logout",
-      icon: "i-lucide-log-out",
-      onSelect: clear,
+      label: "Blog",
+      to: "/blog",
     },
-  ],
-] satisfies DropdownMenuItem[][];
+  ];
+
+  // 로그인했을 때만 메뉴를 추가합니다.
+  if (loggedIn.value) {
+    baseItems.push(
+      {
+        label: "Todos",
+        to: "/todos",
+      },
+      {
+        label: "Optimistic Todos",
+        to: "/optimistic-todos",
+      },
+    );
+  }
+
+  return baseItems;
+});
 </script>
 
 <template>
@@ -34,41 +42,11 @@ const itemLogout = [
       <UNavigationMenu
         :items="items"
         variant="link"
-        class="hidden lg:block"
+        class="hidden sm:block"
       />
 
       <UColorModeButton />
-      <UButton
-        v-if="!loggedIn"
-        to="/api/auth/github"
-        icon="i-simple-icons-github"
-        label="Login"
-        color="neutral"
-        size="xs"
-        external
-      />
-      <div
-        v-else
-        class="flex flex-wrap -mx-2 sm:mx-0"
-      >
-        <UDropdownMenu
-          v-if="user"
-          :items="itemLogout"
-        >
-          <UButton
-            color="neutral"
-            variant="ghost"
-            trailing-icon="i-lucide-chevron-down"
-          >
-            <UAvatar
-              :src="`https://github.com/${user.login}.png`"
-              :alt="user.login"
-              size="3xs"
-            />
-            {{ user.login }}
-          </UButton>
-        </UDropdownMenu>
-      </div>
+      <AppAuth />
     </template>
 
     <template #body>
