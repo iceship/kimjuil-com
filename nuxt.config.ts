@@ -14,6 +14,9 @@ export default defineNuxtConfig({
   ],
   devtools: { enabled: true },
   css: ["~/assets/css/main.css"],
+  site: {
+    url: "https://kimjuil.com",
+  },
   compatibilityDate: "2025-12-11",
   content: {
     experimental: {
@@ -32,10 +35,7 @@ export default defineNuxtConfig({
       standalone: false,
     },
   },
-  routeRules: {
-    // If not using `defineRouteRules` in the page component
-    "/blog": { prerender: true },
-  },
+
   colorMode: {
     preference: "dark",
     fallback: "dark",

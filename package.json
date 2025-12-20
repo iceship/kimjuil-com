@@ -24,12 +24,12 @@
     "@nuxt/eslint": "^1.12.1",
     "@nuxt/fonts": "^0.12.1",
     "@nuxt/image": "^2.0.0",
-    "@nuxt/ui": "^4.2.1",
-    "@nuxthub/core": "^0.10.1",
-    "@pinia/colada": "^0.18.1",
-    "@pinia/colada-nuxt": "^0.2.4",
+    "@nuxt/ui": "^4.3.0",
+    "@nuxthub/core": "^0.10.3",
+    "@pinia/colada": "^0.19.1",
+    "@pinia/colada-nuxt": "^0.2.6",
     "@pinia/nuxt": "^0.11.3",
-    "@upstash/redis": "^1.35.7",
+    "@upstash/redis": "^1.35.8",
     "@vercel/blob": "^2.0.0",
     "drizzle-kit": "^0.31.8",
     "drizzle-orm": "^0.45.1",
@@ -37,21 +37,22 @@
     "nuxt-auth-utils": "^0.5.26",
     "nuxt-og-image": "^5.1.13",
     "pinia": "^3.0.4",
-    "zod": "^4.2.0"
+    "zod": "^4.2.1"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^6.7.1",
     "@iconify-json/heroicons": "^1.2.3",
+    "@iconify-json/vscode-icons": "^1.2.37",
     "@nuxt/devtools": "^3.1.1",
     "@nuxt/eslint-config": "^1.12.1",
-    "baseline-browser-mapping": "^2.9.7",
-    "eslint": "^9.39.1",
+    "baseline-browser-mapping": "^2.9.11",
+    "eslint": "^9.39.2",
     "eslint-plugin-format": "^1.1.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
     "typescript": "^5.9.3",
     "vue-tsc": "^3.1.8",
-    "wrangler": "4.54.0"
+    "wrangler": "4.56.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
