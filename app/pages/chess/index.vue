@@ -26,19 +26,35 @@ const moveListRef = ref<HTMLElement | null>(null);
 // ✨ Fun Features State
 const orientation = ref<"white" | "black">("white");
 const isPlaying = ref(false);
+const isSoundOn = ref(true); // 사운드 켜짐/꺼짐 상태 (기본: 켜짐)
 let playInterval: any = null;
-
+let moveAudio: HTMLAudioElement | null = null;
 // 3. Init
 onMounted(() => {
   game.loadPgn(samplePgn);
   moves.value = game.history();
   displayGame.reset();
   currentFen.value = displayGame.fen();
+
+  moveAudio = new Audio("/move.mp3");
+  moveAudio.load();
 });
 
 onUnmounted(() => {
   stopAutoPlay();
 });
+
+// 🔊 Sound Function
+function playSound() {
+  if (!isSoundOn.value || !moveAudio)
+    return;
+
+  moveAudio.currentTime = 0;
+
+  moveAudio.play().catch((e) => {
+    console.warn("Audio play blocked (user interaction needed first):", e);
+  });
+}
 
 // 4. Logic
 function updateState() {
@@ -49,11 +65,11 @@ function updateState() {
 function nextMove() {
   if (currentMoveIndex.value < moves.value.length - 1) {
     currentMoveIndex.value++;
-    // ✅ TS 에러 해결: move가 undefined일 수 있는 상황 방어
     const move = moves.value[currentMoveIndex.value];
     if (move) {
       displayGame.move(move);
       updateState();
+      playSound(); // ✅ 수가 진행될 때 소리 재생!
     }
   }
   else {
@@ -66,6 +82,7 @@ function prevMove() {
     displayGame.undo();
     currentMoveIndex.value--;
     updateState();
+    // 뒤로 가기는 보통 소리를 안 내거나 다른 소리를 냅니다. (여기선 조용히)
   }
 }
 
@@ -76,31 +93,30 @@ function reset() {
   updateState();
 }
 
-// ✨ New Feature: Go to End
 function goToEnd() {
   stopAutoPlay();
   while (currentMoveIndex.value < moves.value.length - 1) {
     currentMoveIndex.value++;
-    // ✅ TS 에러 해결: move 확인
     const move = moves.value[currentMoveIndex.value];
     if (move) {
       displayGame.move(move);
     }
   }
   updateState();
+  // 끝으로 이동 완료 후 한 번만 소리 재생 (선택 사항)
+  playSound();
 }
 
 function goToMove(index: number) {
   stopAutoPlay();
   if (index > currentMoveIndex.value) {
-    while (currentMoveIndex.value < index) nextMove();
+    while (currentMoveIndex.value < index) nextMove(); // nextMove 안에서 소리가 남
   }
   else if (index < currentMoveIndex.value) {
     while (currentMoveIndex.value > index) prevMove();
   }
 }
 
-// ✨ Fun Feature 1: Toggle Auto Play
 function toggleAutoPlay() {
   if (isPlaying.value) {
     stopAutoPlay();
@@ -122,9 +138,13 @@ function stopAutoPlay() {
     clearInterval(playInterval);
 }
 
-// ✨ Fun Feature 2: Flip Board
 function toggleOrientation() {
   orientation.value = orientation.value === "white" ? "black" : "white";
+}
+
+// ✨ Sound Toggle
+function toggleSound() {
+  isSoundOn.value = !isSoundOn.value;
 }
 
 async function scrollToCurrentMove() {
@@ -133,13 +153,13 @@ async function scrollToCurrentMove() {
   const activeElement = container?.querySelector(".active-move") as HTMLElement;
 
   if (container && activeElement) {
-    // 1. 요소의 위치(offsetTop)를 찾아 중앙 정렬 위치 계산
-    // 식: (요소 위치) - (컨테이너 높이의 절반) + (요소 높이의 절반)
-    const top = activeElement.offsetTop - (container.clientHeight / 2) + (activeElement.clientHeight / 2);
+    const containerRect = container.getBoundingClientRect();
+    const activeRect = activeElement.getBoundingClientRect();
+    const absoluteElementTop = container.scrollTop + (activeRect.top - containerRect.top);
+    const targetScrollTop = absoluteElementTop - (container.clientHeight / 2) + (activeElement.clientHeight / 2);
 
-    // 2. 브라우저 전체가 아닌, '컨테이너 내부'만 스크롤
     container.scrollTo({
-      top,
+      top: targetScrollTop,
       behavior: "smooth",
     });
   }
@@ -154,7 +174,7 @@ async function scrollToCurrentMove() {
         Chess PGN Viewer
       </h1>
       <p class="text-gray-500 dark:text-gray-400">
-        Nuxt UI v3 + Fun Features
+        Nuxt UI v3 + Sound FX 🎵
       </p>
     </div>
 
@@ -165,15 +185,27 @@ async function scrollToCurrentMove() {
         </ClientOnly>
 
         <div class="flex items-center gap-2 w-full justify-between px-1">
-          <UButton
-            icon="i-lucide-arrow-left-right"
-            color="neutral"
-            variant="ghost"
-            size="sm"
-            label="Flip Board"
-            class="text-gray-500"
-            @click="toggleOrientation"
-          />
+          <div class="flex gap-2">
+            <UButton
+              icon="i-lucide-arrow-left-right"
+              color="neutral"
+              variant="ghost"
+              size="sm"
+              label="Flip"
+              class="text-gray-500"
+              @click="toggleOrientation"
+            />
+            <UButton
+              :icon="isSoundOn ? 'i-lucide-volume-2' : 'i-lucide-volume-x'"
+              color="neutral"
+              variant="ghost"
+              size="sm"
+              :label="isSoundOn ? 'Sound On' : 'Mute'"
+              :class="isSoundOn ? 'text-primary-500' : 'text-gray-400'"
+              @click="toggleSound"
+            />
+          </div>
+
           <UButton
             :icon="isPlaying ? 'i-lucide-pause' : 'i-lucide-play'"
             :color="isPlaying ? 'error' : 'success'"
@@ -194,7 +226,6 @@ async function scrollToCurrentMove() {
             label="Start"
             @click="reset"
           />
-
           <UButton
             icon="i-lucide-chevron-left"
             color="primary"
@@ -204,7 +235,6 @@ async function scrollToCurrentMove() {
             label="Prev"
             @click="prevMove"
           />
-
           <UButton
             icon="i-lucide-chevron-right"
             color="primary"
@@ -215,7 +245,6 @@ async function scrollToCurrentMove() {
             label="Next"
             @click="nextMove"
           />
-
           <UButton
             icon="i-lucide-chevrons-right"
             color="neutral"
@@ -246,7 +275,6 @@ async function scrollToCurrentMove() {
               <div v-if="i % 2 === 0" class="flex items-center justify-center text-gray-400 font-mono text-xs">
                 {{ Math.floor(i / 2) + 1 }}.
               </div>
-
               <div
                 class="py-1.5 px-2 rounded cursor-pointer transition-all duration-200 text-center select-none"
                 :class="[
@@ -258,7 +286,6 @@ async function scrollToCurrentMove() {
               >
                 {{ move }}
               </div>
-
               <div v-if="i % 2 === 0 && i === moves.length - 1" class="col-span-1" />
             </template>
           </div>
