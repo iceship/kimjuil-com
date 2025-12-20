@@ -26,6 +26,9 @@ const itemLogout = [
               :src="`https://github.com/${user.login}.png`"
               :alt="user.login"
               size="2xs"
+              :width="20"
+              :height="20"
+              loading="eager"
             />
             {{ user.login }}
           </UButton>

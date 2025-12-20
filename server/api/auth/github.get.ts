@@ -4,7 +4,7 @@ export default defineOAuthGitHubEventHandler({
     if (!allowedIds.includes(Number(user.id))) {
       throw createError({ statusCode: 403, statusMessage: "Forbidden" });
     }
-    await setUserSession(event, { user });
+    await setUserSession(event, { user }, { maxAge: 60 * 60 * 24 * 30 });
     return sendRedirect(event, "/");
   },
 });

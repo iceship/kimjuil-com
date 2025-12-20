@@ -4,13 +4,14 @@ import { todosQuery } from "~/queries/todos";
 definePageMeta({
   middleware: "auth",
 });
+
 const newTodo = ref("");
 
 const toast = useToast();
 const { user } = useUserSession();
 const queryCache = useQueryCache();
 
-const { data: todos } = useQuery(todosQuery);
+const { data: todos, status } = useQuery(todosQuery);
 
 const { mutate: addTodo } = useMutation({
   mutation: (title: string) => {
@@ -193,34 +194,47 @@ const { mutate: deleteTodo } = useMutation({
     </div>
 
     <ul class="divide-y divide-gray-200 dark:divide-gray-800">
-      <li
-        v-for="todo of todos"
-        :key="todo.id"
-        class="flex items-center gap-4 py-2"
-      >
-        <span
-          class="flex-1 font-medium"
-          :class="{
-            'text-gray-500': todo.completed || todo.id < 0,
-            'line-through': todo.completed,
-          }"
-        >{{ todo.title }}</span>
+      <template v-if="status === 'pending'">
+        <li
+          v-for="i in 3"
+          :key="i"
+          class="flex items-center gap-4 py-2"
+        >
+          <USkeleton class="h-6 flex-1" />
+          <USkeleton class="h-5 w-9 rounded-full" />
+          <USkeleton class="h-6 w-6 rounded-md" />
+        </li>
+      </template>
+      <template v-else>
+        <li
+          v-for="todo of todos"
+          :key="todo.id"
+          class="flex items-center gap-4 py-2"
+        >
+          <span
+            class="flex-1 font-medium"
+            :class="{
+              'text-gray-500': todo.completed || todo.id < 0,
+              'line-through': todo.completed,
+            }"
+          >{{ todo.title }}</span>
 
-        <USwitch
-          :model-value="Boolean(todo.completed)"
-          :disabled="todo.id < 0"
-          @update:model-value="toggleTodo(todo)"
-        />
+          <USwitch
+            :model-value="Boolean(todo.completed)"
+            :disabled="todo.id < 0"
+            @update:model-value="toggleTodo(todo)"
+          />
 
-        <UButton
-          color="error"
-          variant="soft"
-          size="xs"
-          icon="i-lucide-x"
-          :disabled="todo.id < 0"
-          @click="deleteTodo(todo)"
-        />
-      </li>
+          <UButton
+            color="error"
+            variant="soft"
+            size="xs"
+            icon="i-lucide-x"
+            :disabled="todo.id < 0"
+            @click="deleteTodo(todo)"
+          />
+        </li>
+      </template>
     </ul>
   </form>
 </template>
