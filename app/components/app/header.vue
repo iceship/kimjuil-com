@@ -7,6 +7,10 @@ const items = computed(() => {
       label: "Blog",
       to: "/blog",
     },
+    {
+      label: "Chess",
+      to: "/chess",
+    },
   ];
 
   // 로그인했을 때만 메뉴를 추가합니다.
