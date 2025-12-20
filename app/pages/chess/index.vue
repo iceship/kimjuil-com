@@ -2,8 +2,8 @@
 import { Chess } from "chess.js";
 import { nextTick, onMounted, onUnmounted, ref } from "vue";
 
-// 1. Sample PGN
-const samplePgn = `
+// 1. Default Sample PGN
+const defaultPgn = `
 [Event "Paris"]
 [Site "Paris FRA"]
 [Date "1858.??.??"]
@@ -23,43 +23,72 @@ const currentMoveIndex = ref(-1);
 const currentFen = ref("");
 const moveListRef = ref<HTMLElement | null>(null);
 
-// ✨ Fun Features State
+// ✨ Features State
 const orientation = ref<"white" | "black">("white");
 const isPlaying = ref(false);
-const isSoundOn = ref(true); // 사운드 켜짐/꺼짐 상태 (기본: 켜짐)
+const isSoundOn = ref(true);
 let playInterval: any = null;
-let moveAudio: HTMLAudioElement | null = null;
-// 3. Init
-onMounted(() => {
-  game.loadPgn(samplePgn);
-  moves.value = game.history();
-  displayGame.reset();
-  currentFen.value = displayGame.fen();
 
-  moveAudio = new Audio("/move.mp3");
+// ✨ New: PGN Modal State
+const isPgnModalOpen = ref(false);
+const inputPgn = ref("");
+
+// Feature flag: hide PGN import UI for now
+const enablePgnImport = false;
+
+// Toast (Nuxt UI)
+const toast = useToast();
+
+// 3. Audio Setup
+let moveAudio: HTMLAudioElement | null = null;
+
+// 4. Init & Lifecycle
+onMounted(() => {
+  moveAudio = new Audio("/move.mp3"); // 파일명 확인 필요!
+  moveAudio.volume = 0.2;
   moveAudio.load();
+  loadGame(defaultPgn);
+  window.addEventListener("keydown", handleKeydown);
 });
 
 onUnmounted(() => {
   stopAutoPlay();
+  window.removeEventListener("keydown", handleKeydown);
 });
 
-// 🔊 Sound Function
-function playSound() {
-  if (!isSoundOn.value || !moveAudio)
-    return;
+// 5. Core Game Logic
+function loadGame(pgn: string) {
+  try {
+    game.loadPgn(pgn);
+    moves.value = game.history();
 
-  moveAudio.currentTime = 0;
+    stopAutoPlay();
+    displayGame.reset();
+    currentMoveIndex.value = -1;
+    currentFen.value = displayGame.fen();
 
-  moveAudio.play().catch((e) => {
-    console.warn("Audio play blocked (user interaction needed first):", e);
-  });
+    inputPgn.value = pgn;
+  }
+  catch (e) {
+    toast.add({
+      title: "Invalid PGN",
+      description: "PGN 형식이 올바르지 않습니다!",
+      color: "error",
+    });
+    console.error(e);
+  }
 }
 
-// 4. Logic
 function updateState() {
   currentFen.value = displayGame.fen();
   scrollToCurrentMove();
+}
+
+function playSound() {
+  if (!isSoundOn.value || !moveAudio)
+    return;
+  moveAudio.currentTime = 0;
+  moveAudio.play().catch(() => {});
 }
 
 function nextMove() {
@@ -69,7 +98,7 @@ function nextMove() {
     if (move) {
       displayGame.move(move);
       updateState();
-      playSound(); // ✅ 수가 진행될 때 소리 재생!
+      playSound();
     }
   }
   else {
@@ -82,7 +111,6 @@ function prevMove() {
     displayGame.undo();
     currentMoveIndex.value--;
     updateState();
-    // 뒤로 가기는 보통 소리를 안 내거나 다른 소리를 냅니다. (여기선 조용히)
   }
 }
 
@@ -98,19 +126,17 @@ function goToEnd() {
   while (currentMoveIndex.value < moves.value.length - 1) {
     currentMoveIndex.value++;
     const move = moves.value[currentMoveIndex.value];
-    if (move) {
+    if (move)
       displayGame.move(move);
-    }
   }
   updateState();
-  // 끝으로 이동 완료 후 한 번만 소리 재생 (선택 사항)
   playSound();
 }
 
 function goToMove(index: number) {
   stopAutoPlay();
   if (index > currentMoveIndex.value) {
-    while (currentMoveIndex.value < index) nextMove(); // nextMove 안에서 소리가 남
+    while (currentMoveIndex.value < index) nextMove();
   }
   else if (index < currentMoveIndex.value) {
     while (currentMoveIndex.value > index) prevMove();
@@ -122,13 +148,10 @@ function toggleAutoPlay() {
     stopAutoPlay();
   }
   else {
-    if (currentMoveIndex.value === moves.value.length - 1) {
+    if (currentMoveIndex.value === moves.value.length - 1)
       reset();
-    }
     isPlaying.value = true;
-    playInterval = setInterval(() => {
-      nextMove();
-    }, 1000);
+    playInterval = setInterval(() => nextMove(), 1000);
   }
 }
 
@@ -142,9 +165,53 @@ function toggleOrientation() {
   orientation.value = orientation.value === "white" ? "black" : "white";
 }
 
-// ✨ Sound Toggle
 function toggleSound() {
   isSoundOn.value = !isSoundOn.value;
+}
+
+function handleKeydown(e: KeyboardEvent) {
+  if (isPgnModalOpen.value || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLInputElement)
+    return;
+
+  switch (e.key) {
+    case "ArrowRight":
+      nextMove();
+      break;
+    case "ArrowLeft":
+      prevMove();
+      break;
+    case "ArrowUp":
+      reset();
+      break;
+    case "ArrowDown":
+      goToEnd();
+      break;
+    case " ": e.preventDefault();
+      toggleAutoPlay();
+      break;
+    case "f": case "F":
+      toggleOrientation();
+      break;
+    case "m": case "M":
+      toggleSound();
+      break;
+  }
+}
+
+function openPgnModal() {
+  if (!enablePgnImport)
+    return;
+  inputPgn.value = "";
+  isPgnModalOpen.value = true;
+}
+
+function applyPgn() {
+  if (!enablePgnImport)
+    return;
+  if (!inputPgn.value.trim())
+    return;
+  loadGame(inputPgn.value);
+  isPgnModalOpen.value = false;
 }
 
 async function scrollToCurrentMove() {
@@ -158,24 +225,41 @@ async function scrollToCurrentMove() {
     const absoluteElementTop = container.scrollTop + (activeRect.top - containerRect.top);
     const targetScrollTop = absoluteElementTop - (container.clientHeight / 2) + (activeElement.clientHeight / 2);
 
-    container.scrollTo({
-      top: targetScrollTop,
-      behavior: "smooth",
-    });
+    container.scrollTo({ top: targetScrollTop, behavior: "smooth" });
   }
 }
 </script>
 
 <template>
-  <div class="min-h-screen p-6 flex flex-col items-center gap-8 bg-gray-50 dark:bg-gray-950">
+  <div class="min-h-screen p-6 flex flex-col items-center gap-8 bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
     <div class="text-center space-y-2">
       <h1 class="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2 justify-center">
         <UIcon name="i-lucide-gamepad-2" class="w-8 h-8 text-primary-500" />
         Chess PGN Viewer
       </h1>
-      <p class="text-gray-500 dark:text-gray-400">
-        Nuxt UI v3 + Sound FX 🎵
-      </p>
+      <div class="flex items-center gap-2 justify-center">
+        <UBadge
+          color="neutral"
+          variant="soft"
+          size="xs"
+        >
+          Arrow Keys: Move
+        </UBadge>
+        <UBadge
+          color="neutral"
+          variant="soft"
+          size="xs"
+        >
+          Space: Auto
+        </UBadge>
+        <UBadge
+          color="neutral"
+          variant="soft"
+          size="xs"
+        >
+          F: Flip
+        </UBadge>
+      </div>
     </div>
 
     <div class="flex flex-col lg:flex-row gap-8 items-start w-full max-w-6xl justify-center">
@@ -186,24 +270,36 @@ async function scrollToCurrentMove() {
 
         <div class="flex items-center gap-2 w-full justify-between px-1">
           <div class="flex gap-2">
-            <UButton
-              icon="i-lucide-arrow-left-right"
-              color="neutral"
-              variant="ghost"
-              size="sm"
-              label="Flip"
-              class="text-gray-500"
-              @click="toggleOrientation"
-            />
-            <UButton
-              :icon="isSoundOn ? 'i-lucide-volume-2' : 'i-lucide-volume-x'"
-              color="neutral"
-              variant="ghost"
-              size="sm"
-              :label="isSoundOn ? 'Sound On' : 'Mute'"
-              :class="isSoundOn ? 'text-primary-500' : 'text-gray-400'"
-              @click="toggleSound"
-            />
+            <UTooltip text="Flip Board (F)">
+              <UButton
+                icon="i-lucide-arrow-left-right"
+                color="neutral"
+                variant="ghost"
+                size="sm"
+                :class="orientation === 'black' ? 'text-primary-500' : 'text-gray-500'"
+                @click="toggleOrientation"
+              />
+            </UTooltip>
+            <UTooltip text="Toggle Sound (M)">
+              <UButton
+                :icon="isSoundOn ? 'i-lucide-volume-2' : 'i-lucide-volume-x'"
+                color="neutral"
+                variant="ghost"
+                size="sm"
+                :class="isSoundOn ? 'text-primary-500' : 'text-gray-400'"
+                @click="toggleSound"
+              />
+            </UTooltip>
+            <UTooltip v-if="enablePgnImport" text="Load Custom Game">
+              <UButton
+                icon="i-lucide-file-input"
+                color="neutral"
+                variant="ghost"
+                size="sm"
+                class="text-gray-500 hover:text-primary-500"
+                @click="openPgnModal"
+              />
+            </UTooltip>
           </div>
 
           <UButton
@@ -223,7 +319,6 @@ async function scrollToCurrentMove() {
             variant="outline"
             size="lg"
             :disabled="currentMoveIndex === -1"
-            label="Start"
             @click="reset"
           />
           <UButton
@@ -232,7 +327,7 @@ async function scrollToCurrentMove() {
             variant="solid"
             size="lg"
             :disabled="currentMoveIndex === -1"
-            label="Prev"
+            class="px-6"
             @click="prevMove"
           />
           <UButton
@@ -242,7 +337,7 @@ async function scrollToCurrentMove() {
             size="lg"
             trailing
             :disabled="currentMoveIndex === moves.length - 1"
-            label="Next"
+            class="px-6"
             @click="nextMove"
           />
           <UButton
@@ -252,7 +347,6 @@ async function scrollToCurrentMove() {
             size="lg"
             trailing
             :disabled="currentMoveIndex === moves.length - 1"
-            label="End"
             @click="goToEnd"
           />
         </div>
@@ -265,12 +359,12 @@ async function scrollToCurrentMove() {
               <UIcon name="i-lucide-list" />
               Moves
             </h3>
-            <span class="text-xs text-gray-400">{{ moves.length }} moves</span>
+            <span class="text-xs text-gray-400 font-mono">{{ moves.length }} moves</span>
           </div>
         </template>
 
         <div ref="moveListRef" class="h-112.5 overflow-y-auto pr-2 custom-scrollbar">
-          <div class="grid grid-cols-[3rem_1fr_1fr] gap-y-1 text-sm">
+          <div v-if="moves.length > 0" class="grid grid-cols-[3rem_1fr_1fr] gap-y-1 text-sm">
             <template v-for="(move, i) in moves" :key="i">
               <div v-if="i % 2 === 0" class="flex items-center justify-center text-gray-400 font-mono text-xs">
                 {{ Math.floor(i / 2) + 1 }}.
@@ -289,9 +383,65 @@ async function scrollToCurrentMove() {
               <div v-if="i % 2 === 0 && i === moves.length - 1" class="col-span-1" />
             </template>
           </div>
+          <div v-else class="flex flex-col items-center justify-center h-full text-gray-400 text-sm gap-2">
+            <UIcon name="i-lucide-clipboard-list" class="w-8 h-8 opacity-50" />
+            <p>No moves loaded</p>
+          </div>
         </div>
       </UCard>
     </div>
+
+    <UModal
+      v-if="enablePgnImport"
+      v-model:open="isPgnModalOpen"
+      title="Import PGN"
+    >
+      <UCard>
+        <template #header>
+          <div class="flex items-center justify-between">
+            <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+              Load Chess Game
+            </h3>
+            <UButton
+              color="neutral"
+              variant="ghost"
+              icon="i-lucide-x"
+              class="-my-1"
+              @click="isPgnModalOpen = false"
+            />
+          </div>
+        </template>
+
+        <div class="p-4 space-y-4">
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Paste your PGN (Portable Game Notation) text below to load the game.
+          </p>
+          <UTextarea
+            v-model="inputPgn"
+            placeholder="[Event ...] 1. e4 e5 ..."
+            :rows="8"
+            class="font-mono text-sm"
+            autofocus
+          />
+        </div>
+
+        <template #footer>
+          <div class="flex justify-end gap-2">
+            <UButton
+              color="neutral"
+              variant="ghost"
+              label="Cancel"
+              @click="isPgnModalOpen = false"
+            />
+            <UButton
+              color="primary"
+              label="Load Game"
+              @click="applyPgn"
+            />
+          </div>
+        </template>
+      </UCard>
+    </UModal>
   </div>
 </template>
 
