@@ -7,7 +7,6 @@ import "@lichess-org/chessground/assets/chessground.base.css";
 import "@lichess-org/chessground/assets/chessground.brown.css";
 import "@lichess-org/chessground/assets/chessground.cburnett.css";
 
-// ✅ orientation prop 추가 (기본값: 'white')
 const props = withDefaults(defineProps<{
   fen: string;
   orientation?: "white" | "black";

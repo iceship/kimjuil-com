@@ -1,15 +1,24 @@
-# NuxtHub Starter Template
+# kimjuil-com
 
-This starter lets you get started with [NuxtHub](https://hub.nuxt.com) in seconds.
-
-- [Documentation](https://hub.nuxt.com)
+A personal website and playground built with [Nuxt 4](https://nuxt.com) and [NuxtHub](https://hub.nuxt.com), deployed on Cloudflare.
 
 ## Features
 
-- Image upload with [NuxtHub Blob](https://hub.nuxt.com/docs/features/blob) from `hub:blob`
-- Save chat messages with [NuxtHub Database](https://hub.nuxt.com/docs/features/database) from `hub:db` (Drizzle ORM)
-- Save server redirects with [NuxtHub KV](https://hub.nuxt.com/docs/features/kv) from `hub:kv`
-- Cache an API response with [NuxtHub Cache](https://hub.nuxt.com/docs/features/cache)
+- **Blog**: Markdown-based blog powered by [Nuxt Content v3](https://content.nuxt.com).
+- **Chess**: Interactive chess board using `chess.js` and [`@lichess-org/chessground`](https://github.com/lichess-org/chessground).
+- **Todos**: Personal task manager with GitHub authentication.
+- **Image Gallery**: Image upload and management using [NuxtHub Blob](https://hub.nuxt.com/docs/features/blob).
+- **Guestbook**: Leave messages saved in [NuxtHub Database](https://hub.nuxt.com/docs/features/database) (SQLite).
+- **Redirects**: Dynamic redirect management using [NuxtHub KV](https://hub.nuxt.com/docs/features/kv).
+- **Authentication**: Secure login via GitHub using `nuxt-auth-utils`.
+
+## Tech Stack
+
+- **Framework**: [Nuxt 4](https://nuxt.com) (App directory structure)
+- **Platform**: [NuxtHub](https://hub.nuxt.com)
+- **Database**: SQLite (Cloudflare D1) with [Drizzle ORM](https://orm.drizzle.team)
+- **State Management**: [Pinia](https://pinia.vuejs.org) & [Pinia Colada](https://pinia-colada.esm.is)
+- **UI Component**: [Nuxt UI](https://ui.nuxt.com) & Nuxt Fonts
 
 ## Setup
 
@@ -27,6 +36,18 @@ Start the development server on `http://localhost:3000`:
 pnpm dev
 ```
 
+## Database Migrations
+
+This project uses Drizzle ORM for database management.
+
+```bash
+# Generate migrations
+pnpm db:generate
+
+# Apply migrations locally
+pnpm db:migrate
+```
+
 ## Production
 
 Build the application for production:
@@ -37,24 +58,18 @@ pnpm build
 
 ## Deploy
 
-### Vercel
-
-On the Vercel dashboard -> Storage, create a Turso SQLite database, Redis database, and Vercel Blob store
-
-```bash
-npm run deploy-vercel
-```
-
-Link the newly created resources to your project and re-deploy.
-
-You can also connect using your git repository to leverage Vercel's CI/CD pipeline.
-
 ### Cloudflare
 
+Deploy the application to Cloudflare Pages with full NuxtHub support.
+
 ```bash
-npm run deploy-cloudflare
+pnpm deploy-cloudflare
 ```
 
-Wrangler will create the necessary resources on your Cloudflare account.
+This command will also handle database migrations on the remote D1 database.
 
-You can also connect using your git repository to leverage Cloudflare's CI/CD pipeline.
+## License
+
+[GPL-3.0](./LICENSE)
+
+This project uses [`@lichess-org/chessground`](https://github.com/lichess-org/chessground) which is licensed under GPL-3.0. Consequently, this project is also licensed under GPL-3.0.

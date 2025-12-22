@@ -72,7 +72,7 @@ function loadGame(pgn: string) {
   catch (e) {
     toast.add({
       title: "Invalid PGN",
-      description: "PGN 형식이 올바르지 않습니다!",
+      description: "Invalid PGN",
       color: "error",
     });
     console.error(e);
