@@ -1,11 +1,13 @@
 <template>
-  <div>
-    <AppHeader />
+  <div class="flex flex-col min-h-screen">
+    <app-header />
 
-    <UMain>
-      <slot />
-    </UMain>
+    <u-main>
+      <u-container>
+        <slot />
+      </u-container>
+    </u-main>
 
-    <AppFooter />
+    <app-footer />
   </div>
 </template>

@@ -9,6 +9,9 @@ export const collections = {
     source: "blog/**/*",
     type: "page",
     schema: z.object({
+      title: z.string().nonempty(),
+      description: z.string().optional(),
+      tags: z.optional(z.array(z.string())),
       image: z.object({ src: z.string().nonempty().editor({ input: "media" }) }),
       authors: z.array(
         z.object({
@@ -19,6 +22,7 @@ export const collections = {
       ),
       date: z.date(),
       badge: z.object({ label: z.string().nonempty() }),
+      rawbody: z.string().optional(),
     }),
   }),
 };

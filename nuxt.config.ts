@@ -6,10 +6,10 @@ export default defineNuxtConfig({
     "@pinia/colada-nuxt",
     "@nuxt/fonts",
     "@nuxt/ui",
+    "@nuxtjs/seo",
     "@nuxt/content",
     "@nuxt/image",
     "nuxt-auth-utils",
-    "nuxt-og-image",
     "@nuxt/eslint",
   ],
   devtools: { enabled: true },
@@ -19,6 +19,14 @@ export default defineNuxtConfig({
   },
   compatibilityDate: "2025-12-11",
   content: {
+    build: {
+      markdown: {
+        toc: {
+          depth: 3,
+          searchDepth: 2,
+        },
+      },
+    },
     experimental: {
       sqliteConnector: "native",
     },

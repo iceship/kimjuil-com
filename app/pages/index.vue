@@ -1,11 +1,7 @@
 <script setup lang="ts">
-// 1. 페이지 메타데이터 및 SEO 설정
 useSeoMeta({
-  title: "KimJuil - 나만의 멋진 앱 서비스",
-  ogTitle: "KimJuil",
-  description: "Public Sans 폰트를 활용한 깔끔한 Nuxt UI 웹사이트입니다.",
-  ogDescription: "KimJuil의 공식 웹사이트에 오신 것을 환영합니다.",
-  // ogImage: '/og-image.png', // 나중에 이미지를 만들면 추가하세요
+  title: "KimJuil - Iceship's Log",
+  description: "Coding, Chess, and Traveling adventures by KimJuil.",
 });
 </script>
 
