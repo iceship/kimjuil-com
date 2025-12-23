@@ -176,7 +176,7 @@ const { mutate: deleteTodo } = useMutation({
     @submit.prevent="addTodo(newTodo)"
   >
     <div class="flex items-center gap-2">
-      <UInput
+      <u-input
         v-model="newTodo"
         name="todo"
         class="flex-1"
@@ -186,7 +186,7 @@ const { mutate: deleteTodo } = useMutation({
         :ui="{ base: 'flex-1' }"
       />
 
-      <UButton
+      <u-button
         type="submit"
         icon="i-lucide-plus"
         :disabled="newTodo.trim().length === 0"
@@ -200,9 +200,9 @@ const { mutate: deleteTodo } = useMutation({
           :key="i"
           class="flex items-center gap-4 py-2"
         >
-          <USkeleton class="h-6 flex-1" />
-          <USkeleton class="h-5 w-9 rounded-full" />
-          <USkeleton class="h-6 w-6 rounded-md" />
+          <u-skeleton class="h-6 flex-1" />
+          <u-skeleton class="h-5 w-9 rounded-full" />
+          <u-skeleton class="h-6 w-6 rounded-md" />
         </li>
       </template>
       <template v-else>
@@ -219,13 +219,13 @@ const { mutate: deleteTodo } = useMutation({
             }"
           >{{ todo.title }}</span>
 
-          <USwitch
+          <u-switch
             :model-value="Boolean(todo.completed)"
             :disabled="todo.id < 0"
             @update:model-value="toggleTodo(todo)"
           />
 
-          <UButton
+          <u-button
             color="error"
             variant="soft"
             size="xs"

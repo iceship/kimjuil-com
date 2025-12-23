@@ -15,6 +15,13 @@
       "when": 1765863186190,
       "tag": "0001_black_phantom_reporter",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1766453251632,
+      "tag": "0002_nebulous_blue_blade",
+      "breakpoints": true
     }
   ]
 }

@@ -6,8 +6,8 @@ const BodySchema = z.object({
 });
 
 export default eventHandler(async (event) => {
-  const { title } = await readValidatedBody(event, body => BodySchema.parse(body));
   const { user } = await requireUserSession(event);
+  const { title } = await readValidatedBody(event, body => BodySchema.parse(body));
 
   // Insert todo for the current user
   const todos = await db.insert(schema.todos).values({
