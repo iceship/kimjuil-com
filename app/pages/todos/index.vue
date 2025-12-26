@@ -12,7 +12,6 @@ const { user } = useUserSession();
 const queryCache = useQueryCache();
 
 const { data: todos, status } = useQuery(todosQuery);
-
 const { mutate: addTodo } = useMutation({
   mutation: (title: string) => {
     if (!title.trim())

@@ -6,6 +6,7 @@ const BodySchema = z.object({
   description: z.string().optional(),
   fen: z.string().optional(),
   pgn: z.string().min(1),
+  thumbnail: z.string().optional(),
 });
 
 export default eventHandler(async (event) => {
@@ -18,6 +19,7 @@ export default eventHandler(async (event) => {
     description: body.description || "",
     fen: body.fen || "",
     pgn: body.pgn,
+    thumbnail: body.thumbnail || "",
     createdAt: new Date(),
   }).returning();
 

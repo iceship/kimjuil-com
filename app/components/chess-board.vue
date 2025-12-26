@@ -2,7 +2,7 @@
 import type { Config } from "@lichess-org/chessground/config";
 
 import { Chessground } from "@lichess-org/chessground";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
 import "@lichess-org/chessground/assets/chessground.base.css";
 import "@lichess-org/chessground/assets/chessground.brown.css";
 import "@lichess-org/chessground/assets/chessground.cburnett.css";
@@ -16,6 +16,7 @@ const props = withDefaults(defineProps<{
 
 const boardElement = ref<HTMLElement | null>(null);
 let ground: any = null;
+let resizeObserver: ResizeObserver;
 
 function initBoard() {
   if (!boardElement.value)
@@ -23,10 +24,14 @@ function initBoard() {
 
   const config: Config = {
     fen: props.fen,
-    orientation: props.orientation, // 방향 설정
+    orientation: props.orientation,
     viewOnly: true,
     coordinates: true,
     animation: { enabled: true, duration: 200 },
+    // 체스 기물 이미지가 잘 로드되도록 기본 설정 확인
+    drawable: {
+      visible: true,
+    },
   };
 
   if (ground) {
@@ -35,10 +40,28 @@ function initBoard() {
   else {
     ground = Chessground(boardElement.value, config);
   }
+
+  // 강제 리드로우 (레이아웃 잡힐 때까지 약간 지연)
+  setTimeout(() => ground?.redrawAll(), 100);
 }
 
 onMounted(() => {
   initBoard();
+
+  if (boardElement.value) {
+    resizeObserver = new ResizeObserver(() => {
+      if (ground)
+        ground.redrawAll();
+    });
+    resizeObserver.observe(boardElement.value);
+  }
+});
+
+onUnmounted(() => {
+  if (resizeObserver)
+    resizeObserver.disconnect();
+  if (ground)
+    ground.destroy();
 });
 
 watch(() => props.fen, (newFen) => {
@@ -46,7 +69,6 @@ watch(() => props.fen, (newFen) => {
     ground.set({ fen: newFen });
 });
 
-// ✅ 방향이 바뀌면 보드도 뒤집기
 watch(() => props.orientation, (newOrientation) => {
   if (ground)
     ground.set({ orientation: newOrientation });
@@ -54,22 +76,5 @@ watch(() => props.orientation, (newOrientation) => {
 </script>
 
 <template>
-  <div class="flex justify-center items-center rounded-lg overflow-hidden bg-[#f0d9b5] shadow-md ring-1 ring-gray-200 dark:ring-gray-800">
-    <div ref="boardElement" class="chess-board" />
-  </div>
+  <div ref="boardElement" class="w-full h-full block" />
 </template>
-
-<style scoped>
-.chess-board {
-  width: 500px;
-  height: 500px;
-  background: #f0d9b5;
-}
-
-@media (max-width: 640px) {
-  .chess-board {
-    width: 350px;
-    height: 350px;
-  }
-}
-</style>
