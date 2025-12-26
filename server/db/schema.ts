@@ -21,5 +21,6 @@ export const games = sqliteTable("games", {
   description: text("description"),
   fen: text("fen"),
   pgn: text("pgn").notNull(),
+  thumbnail: text("thumbnail"),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
 });

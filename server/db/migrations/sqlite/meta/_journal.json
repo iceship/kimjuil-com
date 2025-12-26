@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1765423539366,
-      "tag": "0000_dapper_thena",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1765863186190,
-      "tag": "0001_black_phantom_reporter",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1766453251632,
-      "tag": "0002_nebulous_blue_blade",
+      "when": 1766750259908,
+      "tag": "0000_slim_nightcrawler",
       "breakpoints": true
     }
   ]
