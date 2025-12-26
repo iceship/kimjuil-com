@@ -55,9 +55,11 @@ export default eventHandler(async (event) => {
       // Chess.com URL의 ?move=66은 보통 Ply(반 수)를 의미합니다. (백1수=1, 흑1수=2)
       // 만약 전체 수(Full move)라면 * 2를 고려해야 함.
       // *Chess.com 분석 보드는 Ply(반 수) 기준입니다.*
-
       for (let i = 0; i < targetMove && i < history.length; i++) {
-        replayChess.move(history[i]);
+        const move = history[i];
+        if (move) {
+          replayChess.move(move);
+        }
       }
       fen = replayChess.fen();
       description += `\n\nPosition at move ${Math.ceil(targetMove / 2)}`;
