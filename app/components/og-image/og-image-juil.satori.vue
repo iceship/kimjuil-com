@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { useSiteConfig } from "#site-config/app/composables";
 import { computed } from "vue";
+
+import { useSiteConfig } from "#site-config/app/composables";
 
 const props = withDefaults(defineProps<{
   title?: string;

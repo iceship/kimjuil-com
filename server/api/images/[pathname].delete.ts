@@ -1,6 +1,7 @@
 import { blob } from "hub:blob";
 
 export default eventHandler(async (event) => {
+  await requireUserSession(event);
   const { pathname } = event.context.params || {};
 
   if (!pathname) {

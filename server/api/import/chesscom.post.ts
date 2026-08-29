@@ -7,6 +7,7 @@ const BodySchema = z.object({
 });
 
 export default eventHandler(async (event) => {
+  await requireUserSession(event);
   const body = await readValidatedBody(event, b => BodySchema.parse(b));
 
   // 1. URL 파싱 (Game ID 및 Move 번호 추출)

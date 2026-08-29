@@ -18,6 +18,17 @@ export default defineNuxtConfig({
     url: "https://kimjuil.com",
   },
   compatibilityDate: "2025-12-11",
+  routeRules: {
+    "/**": {
+      headers: {
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "SAMEORIGIN",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+      },
+    },
+  },
+
   content: {
     build: {
       markdown: {

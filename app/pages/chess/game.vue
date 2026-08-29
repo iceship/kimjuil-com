@@ -151,7 +151,7 @@ function toggleAutoPlay() {
     if (currentMoveIndex.value === moves.value.length - 1)
       reset();
     isPlaying.value = true;
-    playInterval = setInterval(() => nextMove(), 1000);
+    playInterval = setInterval(nextMove, 1000);
   }
 }
 

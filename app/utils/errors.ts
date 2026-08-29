@@ -1,6 +1,6 @@
-import type { NuxtError } from "#app";
-
 import { ZodError } from "zod";
+
+import type { NuxtError } from "#app";
 
 export function isNuxtZodError(err: unknown): err is NuxtError<{ data: ZodError }> {
   return (
